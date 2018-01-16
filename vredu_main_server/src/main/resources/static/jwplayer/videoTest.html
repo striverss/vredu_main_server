@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>videoTest</title>
+		<meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+	    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	    <script src="mustache.js"></script>
+	    <script src="jquery.js"></script>
+	    <script src="jwplayer.js"></script>
+	</head>
+	<body onload="loadUser()">
+		<div id="player">
+		<!-- <script>jwplayer.key="4sNBpozdkb2Gv+IYeWyd+CID9tW2NXdJE5GeSg==";//修改为自己的key</script> -->
+		<script type="text/javascript">
+			function loadUser() {
+				var data;
+			  	var temp;
+
+			  	let url = 'http://10.112.69.26:8080/SelectAllCourseVideo';
+			  	let req = new XMLHttpRequest();
+			  	req.open('GET', url, true);
+			  	req.send();
+			  	req.onreadystatechange = () => {
+			        if(req.readyState === 4 & req.status === 200) {
+			            // console.log(req.response);
+			            data = req.response;
+			            // console.log(data);
+			            temp = eval("("+ data +")");
+			            console.log(temp);
+
+			            var courseVideoName = temp[0].courseVideoName + ".mp4";
+			            console.log(courseVideoName);
+			            var courseVideoUrl = temp[0].courseVideoUrl;
+
+			            jwplayer("player").setup({
+							"flashplayer":"player.swf",
+							// image:"preview.jpg",
+							"file": courseVideoName,
+							"streamer": courseVideoUrl,
+							"width": '720',
+			    			"height": '480'
+						});
+			            
+			 		}
+				}
+
+				// jwplayer("player").setup({
+				// 	flashplayer:"player.swf",
+				// 	// image:"preview.jpg",
+				// 	file:"BladeRunner2049.flv",
+				// 	streamer:"rtmp://10.112.69.26:1935/oflaDemo",
+				// 	width: '720',
+	   //  			height: '480'
+				// });
+			}
+		</script>
+	</div>
+	</body>
+</html>
