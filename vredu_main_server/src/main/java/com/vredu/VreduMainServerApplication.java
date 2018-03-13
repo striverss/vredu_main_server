@@ -10,4 +10,5 @@ public class VreduMainServerApplication {
 		System.out.println( "Hello World!" );
 		SpringApplication.run(VreduMainServerApplication.class, args);
 	}
+
 }

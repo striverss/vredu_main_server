@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vredu.Config.WebSecurityConfig;
 import com.vredu.Dao.User_Dao;
@@ -23,11 +25,14 @@ import com.vredu.Entity.User;
 public class User_Controller {
 	@Autowired
     User_Dao user_dao;
-	
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	//用户登录处理
 	@RequestMapping(value = {"/loginHandle"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> loginHandle(String username, String password, HttpSession session) {
+		logger.info("登录处理！");
+
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		List<User> user = user_dao.verifyUser(username, password);
@@ -36,13 +41,12 @@ public class User_Controller {
 			map.put("message", "登录失败");
 			return map;
 		}
-		else {
-			session.setAttribute(WebSecurityConfig.SESSION_KEY, username);
-			
-			map.put("success", true);
-			map.put("message", "登录成功");
-			return map;
-		}
+		session.setAttribute(WebSecurityConfig.SESSION_KEY, username);
+
+		map.put("success", true);
+		map.put("message", "登录成功");
+		return map;
+
 	}
 	
 	

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration status="WARN" monitorInterval="30">
+    <properties>
+        <!-- 目标文件目录和输出格式配置 -->
+        <property name="log_dir">/home/striverss/vredu_main_server/vredu_main_server/logs</property>
+        <property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss,SSS} %5p %c{1}:%L - %m%n</property>
+    </properties>
+
+    <appenders>
+        <!-- 输出控制台日志的配置 -->
+        <Console name="console" target="system_out">
+            <PatternLayout pattern="${PATTERN}" />
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <!--<ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>-->
+        </Console>
+
+        <!--文件会打印出所有信息，这个log每次运行程序会自动清空，由append属性决定，这个也挺有用的，适合临时测试用-->
+        <File name="log" fileName="${log_dir}/test.log" append="false">
+            <PatternLayout pattern="${PATTERN}"/>
+        </File>
+
+        <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="Info"
+                     fileName="${log_dir}/info.log"
+                     filePattern="${log_dir}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="Warn"
+                     fileName="${log_dir}/warn.log"
+                     filePattern="${log_dir}/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="Error"
+                     fileName="${log_dir}/error.log"
+                     filePattern="${log_dir}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+    </appenders>
+
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <logger name="org.springframework" level="INFO"></logger>
+        <logger name="org.mybatis" level="INFO"></logger>
+        <root level="all">
+            <appender-ref ref="console"/>
+            <appender-ref ref="Info"/>
+            <appender-ref ref="Warn"/>
+            <appender-ref ref="Error"/>
+        </root>
+    </loggers>
+
+</configuration>

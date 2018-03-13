@@ -13,5 +13,8 @@ spring:
     request-context-attribute: request
     enabled: true
     check-template-location: true
-    
+logging:
+  config: classpath:log4j2.xml
+
+
   
